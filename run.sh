@@ -1,0 +1,1 @@
+qemu-system-i386 build/i686_bootloader.bin
