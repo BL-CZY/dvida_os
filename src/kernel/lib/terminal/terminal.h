@@ -4,7 +4,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
-#include "../../modules/interrupt/pic/io.h"
+#include "../io/io.h"
 
 //defining colorcodes
 enum vga_color {
