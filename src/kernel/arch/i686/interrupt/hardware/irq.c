@@ -1,6 +1,6 @@
 #include "irq.h"
 
-void irq_init()
+void irq_init(void)
 {
     //0x20 is 32 and 0x28 is 40, which are after the intel-reserved gates
     pic_config(0x20, 0x28);

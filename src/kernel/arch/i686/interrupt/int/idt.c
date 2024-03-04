@@ -1,6 +1,6 @@
 #include "idt.h"
 
-static void idt_init(void)
+void idt_init(void)
 {
     //loop to fill in the idt
     for(size_t i = 0; i < 256; ++i)

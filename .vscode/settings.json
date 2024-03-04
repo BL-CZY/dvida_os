@@ -3,6 +3,7 @@
         "*.ejs": "html",
         "io.h": "c",
         "stdint.h": "c",
-        "int_common.h": "c"
+        "int_common.h": "c",
+        "idt.h": "c"
     }
 }

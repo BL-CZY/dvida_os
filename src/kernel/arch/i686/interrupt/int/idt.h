@@ -45,6 +45,6 @@ static idt_register_t idtr;
 
 extern void* isr_stub_table[]; //void* could point to any type of objects, so here it points to the start of the isr_stub_table
 
-static void idt_init(void);
+void idt_init(void);
 
 #endif
