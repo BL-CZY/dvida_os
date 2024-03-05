@@ -5,32 +5,46 @@ include ../../make/common.mk
 GDT_DIR=arch/i686/gdt
 INT_DIR=arch/i686/interrupt
 
-i686: $(BUILD_DIR)/i686_kernel.o
+i686: init $(BUILD_DIR)/i686_kernel.o
 
-$(BUILD_DIR)/i686_kernel.o : i686_kernel_basic
-	$(LD32) -r -o $@ $(BUILD_DIR)/i686_kernel.o $(BUILD_DIR)/i686_gdt.o $(BUILD_DIR)/i686_interrupt.o $(BUILD_DIR)/kernel_naked.o
+init:
+	mkdir -p $(BUILD_DIR)/kernel
+
+#build dir
+OBJ_DIR=$(BUILD_DIR)/kernel
+
+$(BUILD_DIR)/i686_kernel.o : i686_kernel_basic $(KERNEL_OBJ)
+	$(LD32) -r -o $@ $(KERNEL_OBJ)
 	@echo "$(YELLOW)Successfully built the i686 kernel$(RESET)"
 	@echo "$(YELLOW)Clean up...$(RESET)"
-	rm -f $(BUILD_DIR)i686_gdt.o $(BUILD_DIR)i686_interrupt.o
+	rm -r $(OBJ_DIR)
 	@echo ""
 
 
-i686_kernel_basic: i686_gdt i686_interrupt kernel_naked
+i686_kernel_basic: i686_gdt i686_interrupt lib kernel_naked
 
 
-i686_gdt: $(BUILD_DIR)/i686_gdt.o
+i686_gdt: $(OBJ_DIR)/i686_gdt.o
 
-$(BUILD_DIR)/i686_gdt.o : $(GDT_DIR)/Makefile
-	make -C arch/i686/gdt BUILD_DIR=$(abspath $(BUILD_DIR))
-
-
-i686_interrupt: $(BUILD_DIR)/i686_interrupt.o
-
-$(BUILD_DIR)/i686_interrupt.o : $(INT_DIR)/Makefile
-	make -C arch/i686/interrupt BUILD_DIR=$(abspath $(BUILD_DIR))
+$(OBJ_DIR)/i686_gdt.o : $(GDT_DIR)/Makefile
+	make -C arch/i686/gdt BUILD_DIR=$(abspath $(OBJ_DIR))
 
 
-kernel_naked: $(BUILD_DIR)/kernel_naked.o
+i686_interrupt: $(OBJ_DIR)/i686_interrupt.o
 
-$(BUILD_DIR)/kernel_naked.o: $(BUILD_DIR)/kernel.c
-	$(GCC32) -c kernel.c -o $(BUILD_DIR)/kernel_naked.o $(GCC_CONFIG)
+$(OBJ_DIR)/i686_interrupt.o : $(INT_DIR)/Makefile
+	make -C arch/i686/interrupt BUILD_DIR=$(abspath $(OBJ_DIR))
+
+
+lib : $(OBJ_DIR)/lib.o
+
+$(OBJ_DIR)/lib.o : lib/Makefile
+	make -C lib BUILD_DIR=$(abspath $(OBJ_DIR))
+
+
+kernel_naked: $(OBJ_DIR)/kernel_naked.o
+
+$(OBJ_DIR)/kernel_naked.o: kernel.c
+	$(GCC32) -c kernel.c -o $(OBJ_DIR)/kernel_naked.o $(GCC_CONFIG)
+
+KERNEL_OBJ=$(wildcard $(OBJ_DIR)/*.o)

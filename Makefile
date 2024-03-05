@@ -27,6 +27,12 @@ i686_kernel: $(OBJ_DIR)/i686_kernel.o
 $(OBJ_DIR)/i686_kernel.o: src/kernel/Makefile
 	make -C src/kernel BUILD_DIR=$(abspath $(OBJ_DIR)) i686
 
+i686_combine: $(OBJ_DIR)/i686_boot.o $(OBJ_DIR)/i686_kernel.o
+	$(GCC32) -T src/linker.ld -o build/isodir/boot/os.bin -ffreestanding -O2 -nostdlib $(OBJ_DIR)/i686_boot.o $(OBJ_DIR)/i686_kernel.o -lgcc
+
+i686_build_iso:
+	grub-mkrescue -o build/os.iso build/isodir
+
 init:
 	mkdir -p build/isodir/boot/grub
 	mkdir -p build/obj

@@ -4,6 +4,7 @@
         "io.h": "c",
         "stdint.h": "c",
         "int_common.h": "c",
-        "idt.h": "c"
+        "idt.h": "c",
+        "keyboard.h": "c"
     }
 }
