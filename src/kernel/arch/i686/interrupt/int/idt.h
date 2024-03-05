@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include "../../../../lib/terminal/terminalio.h"
 
 typedef struct idt_entry
 {
@@ -39,7 +40,7 @@ typedef struct idt_register
  * 
  * the interrupt description table would consider 256 entries
 */
-__attribute__((aligned(0x10)))
+
 static idt_entry_t idt[256];
 static idt_register_t idtr;
 

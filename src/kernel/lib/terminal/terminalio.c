@@ -197,7 +197,6 @@ void printf_no_color(const char* format)
     }
 }
 
-__attribute__((cdecl))
 void printf(const char* format, ...)
 {
     size_t length = strlen(format);

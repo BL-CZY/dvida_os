@@ -21,7 +21,6 @@ global isr_stub_table
 section .text
 
 extern isr_handler
-extern printf
 
 isr_stub_table:
     %assign i 0

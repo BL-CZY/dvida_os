@@ -3,6 +3,7 @@
 
 #include "pic.h"
 #include "../../../../lib/keyboard/keyboard.h"
+#include "../../../../lib/io/io.h"
 #include "../int_common.h"
 
 void irq_init();

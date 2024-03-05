@@ -14,7 +14,7 @@ init:
 OBJ_DIR=$(BUILD_DIR)/kernel
 
 $(BUILD_DIR)/i686_kernel.o : i686_kernel_basic $(KERNEL_OBJ)
-	$(LD32) -r -o $@ $(KERNEL_OBJ)
+	$(GCC32) -T $(LINKER) -o $@ $(LINK_CONFIG) $(KERNEL_OBJ) -lgcc
 	@echo "$(YELLOW)Successfully built the i686 kernel$(RESET)"
 	@echo "$(YELLOW)Clean up...$(RESET)"
 	rm -r $(OBJ_DIR)
@@ -27,19 +27,19 @@ i686_kernel_basic: i686_gdt i686_interrupt lib kernel_naked
 i686_gdt: $(OBJ_DIR)/i686_gdt.o
 
 $(OBJ_DIR)/i686_gdt.o : $(GDT_DIR)/Makefile
-	make -C arch/i686/gdt BUILD_DIR=$(abspath $(OBJ_DIR))
+	make -C arch/i686/gdt BUILD_DIR=$(abspath $(OBJ_DIR)) LINKER=$(abspath $(LINKER))
 
 
 i686_interrupt: $(OBJ_DIR)/i686_interrupt.o
 
 $(OBJ_DIR)/i686_interrupt.o : $(INT_DIR)/Makefile
-	make -C arch/i686/interrupt BUILD_DIR=$(abspath $(OBJ_DIR))
+	make -C arch/i686/interrupt BUILD_DIR=$(abspath $(OBJ_DIR)) LINKER=$(abspath $(LINKER))
 
 
 lib : $(OBJ_DIR)/lib.o
 
 $(OBJ_DIR)/lib.o : lib/Makefile
-	make -C lib BUILD_DIR=$(abspath $(OBJ_DIR))
+	make -C lib BUILD_DIR=$(abspath $(OBJ_DIR)) LINKER=$(abspath $(LINKER))
 
 
 kernel_naked: $(OBJ_DIR)/kernel_naked.o

@@ -8,7 +8,6 @@ extern void irq_init(void);
 void kernel_main(void)
 {
     printf("%ce%s%cd%s%cc%u\n", "test", "test", vga_entry_color(VGA_COLOR_LIGHT_BLUE, VGA_COLOR_BLACK), 300);
-    __asm__ volatile("int $0x01");
 
     for(;;) {
         asm("hlt");

@@ -1,7 +1,5 @@
 #include "gdt.h"
 
-extern void reload_segment(void);
-
 void gdt_init(void)
 {
     gdt_entry_t gdt[5];

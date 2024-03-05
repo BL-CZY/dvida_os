@@ -10,7 +10,7 @@ init:
 OBJ_DIR=$(BUILD_DIR)/lib
 
 $(BUILD_DIR)/lib.o : lib_basic $(OBJ_FILES)
-	$(LD32) -r -o $@ $(OBJ_FILES)
+	$(GCC32) -T $(LINKER) -o $@ $(LINK_CONFIG) $(OBJ_FILES) -lgcc
 	@echo "$(YELLOW)Successfully built lib.o"
 	@echo "Clean up...$(RESET)"
 	rm -r $(OBJ_DIR)

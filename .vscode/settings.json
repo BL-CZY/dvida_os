@@ -5,6 +5,9 @@
         "stdint.h": "c",
         "int_common.h": "c",
         "idt.h": "c",
-        "keyboard.h": "c"
+        "keyboard.h": "c",
+        "gdt.h": "c",
+        "terminalio.h": "c",
+        "irq.h": "c"
     }
 }

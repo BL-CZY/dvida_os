@@ -1,5 +1,6 @@
 #tools
 include make/common.mk
+LINKER=src/linker.ld
 
 #src directories
 BOOT_DIR=src/boot
@@ -25,10 +26,10 @@ $(OBJ_DIR)/i686_boot.o : $(BOOT_DIR)/boot_i686.asm
 i686_kernel: $(OBJ_DIR)/i686_kernel.o
 
 $(OBJ_DIR)/i686_kernel.o: src/kernel/Makefile
-	make -C src/kernel BUILD_DIR=$(abspath $(OBJ_DIR)) i686
+	make -C src/kernel BUILD_DIR=$(abspath $(OBJ_DIR)) LINKER=$(abspath $(LINKER)) i686
 
 i686_combine: $(OBJ_DIR)/i686_boot.o $(OBJ_DIR)/i686_kernel.o
-	$(GCC32) -T src/linker.ld -o build/isodir/boot/os.bin -ffreestanding -O2 -nostdlib $(OBJ_DIR)/i686_boot.o $(OBJ_DIR)/i686_kernel.o -lgcc
+	$(GCC32) -T src/linker.ld -o build/isodir/boot/os.bin $(LINK_CONFIG) $(OBJ_DIR)/i686_boot.o $(OBJ_DIR)/i686_kernel.o -lgcc
 
 i686_build_iso:
 	grub-mkrescue -o build/os.iso build/isodir
@@ -44,4 +45,3 @@ init:
 
 clean:
 	rm -f -r build
-	rm -f os.iso
