@@ -4,6 +4,7 @@ global inb
 global outb
 global inw
 global outw
+global io_wait
 
 global disable_interrupts
 global enable_interrupts
@@ -61,6 +62,15 @@ section .text
 
     ; arguments: none
     ; 
+    ; function: transfer things to random ports to wait for a lil bit
+    io_wait:
+        push 0x00
+        push 0x80
+        call outb
+        ret
+
+    ; arguments: none
+    ; 
     ; function: diable interrupts, avoid the use of inline asm
     disable_interrupts:
         cli
@@ -80,6 +90,9 @@ section .text
         hlt
         ret
 
+    ; arguments: none
+    ; 
+    ; function: system call 0x80
     call_interrupt_0x80:
         int 0x80
         ret
