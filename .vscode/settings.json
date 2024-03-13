@@ -8,6 +8,7 @@
         "keyboard.h": "c",
         "gdt.h": "c",
         "terminalio.h": "c",
-        "irq.h": "c"
+        "irq.h": "c",
+        "stdio.h": "c"
     }
 }

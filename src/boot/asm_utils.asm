@@ -1,0 +1,79 @@
+[bits 32]
+
+global inb
+global outb
+global inw
+global outw
+
+global diable_interrupts
+global enable_interrupts
+global halt_cpu
+
+section .text
+    
+    ; arguments:
+    ;   a uint16_t port
+    ;
+    ; return:
+    ;   a uint8_t value
+    ;
+    ; function: it will read in the port dx, and read the value of the port to al
+    inb:
+        mov dx, [esp + 4]
+        in al, dx
+        ret
+
+    ; arguments:
+    ;   a uint16_t port
+    ;   a uint8_t value
+    ;
+    ; function: it will write the value stored in al into the port stored in dx
+    outb:
+        mov dx, [esp + 4]
+        mov al, [esp + 8]
+        out dx, al
+        ret
+
+    ; arguments:
+    ;   a uint16_t port
+    ;
+    ; return:
+    ;   a uint16_t value
+    ;
+    ; function: it will read in the port dx, and read the value of the port to ax
+    inw:
+        mov dx, [esp + 4]
+        in ax, dx
+        ret
+
+    ; arguments:
+    ;   a uint16_t port
+    ;   a uint8_t value
+    ;
+    ; function: it will write the value stored in ax into the port stored in dx
+    outw:
+        mov dx, [esp + 4]
+        mov ax, [esp + 8]
+        out dx, ax
+        ret
+
+    ; arguments: none
+    ; 
+    ; function: diable interrupts, avoid the use of inline asm
+    diable_interrupts:
+        cli
+        ret
+
+    ; arguments: none
+    ; 
+    ; function: enable interrupts, avoid the use of inline asm
+    enable_interrupts:
+        sti
+        ret
+
+    ; arguments: none
+    ; 
+    ; function: halt the cpu, avoid the use of inline asm
+    halt_cpu:
+        hlt
+        ret
