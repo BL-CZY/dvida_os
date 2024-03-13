@@ -56,6 +56,10 @@ mov esp, stack_top
 extern gdt_init
 call gdt_init
 
+; now load the idt
+extern idt_init
+call idt_init
+
 extern kernel_main
 call kernel_main
 

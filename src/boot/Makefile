@@ -1,14 +1,28 @@
 include $(MAKE_UTILS)/common.mk
 
-SRC = $(wildcard *.asm)
+SRC=$(wildcard *.asm)
 #pattern substitution:
 #%.asm is the pattern
 #$(BUILD_DIR)/%.o is the target
 #$(SRC) is the words that we want to change
-OBJ = $(patsubst %.asm,$(BUILD_DIR)/%.o,$(SRC))
+OBJ=$(patsubst %.asm,$(BUILD_DIR)/%.o,$(SRC))
 
-boot_stage1: $(OBJ)
+.PHONY: basic
+
+basic: boot idt
+
+boot: $(OBJ)
 
 $(BUILD_DIR)/%.o: %.asm
 	$(ASM) $(ASM_FLAG) $< -o $@
-	@echo -e "$(YELLOW)boot_stage1 done$(DEFAULT)"
+
+idt: $(BUILD_DIR)/handlers.o $(BUILD_DIR)/idt.o $(BUILD_DIR)/isr_wrapper.o
+
+$(BUILD_DIR)/handlers.o: interrupt/handlers.c
+	$(CC) -c $< -o $@ $(CC_FLAGS)
+
+$(BUILD_DIR)/idt.o: interrupt/idt.asm
+	$(ASM) $(ASM_FLAG) $< -o $@
+
+$(BUILD_DIR)/isr_wrapper.o: interrupt/isr_wrapper.asm
+	$(ASM) $(ASM_FLAG) $< -o $@

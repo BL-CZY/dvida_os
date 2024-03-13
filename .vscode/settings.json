@@ -9,6 +9,8 @@
         "gdt.h": "c",
         "terminalio.h": "c",
         "irq.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "handlers.h": "c",
+        "asm_utils.h": "c"
     }
 }

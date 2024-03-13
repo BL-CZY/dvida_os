@@ -5,9 +5,11 @@ global outb
 global inw
 global outw
 
-global diable_interrupts
+global disable_interrupts
 global enable_interrupts
 global halt_cpu
+
+global call_interrupt_0x80
 
 section .text
     
@@ -60,7 +62,7 @@ section .text
     ; arguments: none
     ; 
     ; function: diable interrupts, avoid the use of inline asm
-    diable_interrupts:
+    disable_interrupts:
         cli
         ret
 
@@ -76,4 +78,8 @@ section .text
     ; function: halt the cpu, avoid the use of inline asm
     halt_cpu:
         hlt
+        ret
+
+    call_interrupt_0x80:
+        int 0x80
         ret
