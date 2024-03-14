@@ -6,10 +6,8 @@
 	    pkgs.qemu
 	    pkgs.grub2
 	    pkgs.xorriso
-	    pkgs.hexcurse
+      pkgs.gnumake
 	    pkgs.dhex
-      pkgs.rustc
-      pkgs.gtk3
     ];
     
     shellHook = ''
