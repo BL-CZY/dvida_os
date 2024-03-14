@@ -16,7 +16,10 @@ boot: $(OBJ)
 $(BUILD_DIR)/%.o: %.asm
 	$(ASM) $(ASM_FLAG) $< -o $@
 
-idt: $(BUILD_DIR)/handlers.o $(BUILD_DIR)/idt.o $(BUILD_DIR)/isr_wrapper.o
+idt: $(BUILD_DIR)/pic.o $(BUILD_DIR)/idt.o $(BUILD_DIR)/isr_wrapper.o
+
+$(BUILD_DIR)/pic.o: interrupt/pic.c
+	$(CC) -c $< -o $@ $(CC_FLAGS)
 
 $(BUILD_DIR)/handlers.o: interrupt/handlers.c
 	$(CC) -c $< -o $@ $(CC_FLAGS)

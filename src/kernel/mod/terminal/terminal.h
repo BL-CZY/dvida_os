@@ -24,13 +24,6 @@ enum vga_color {
 	VGA_COLOR_WHITE = 15,
 };
 
-enum io_state
-{
-    stdin_command,
-    stdin_data,
-    stdout,
-};
-
 static const size_t VGA_WIDTH = 80;
 static const size_t VGA_HEIGHT = 25;
 

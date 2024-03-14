@@ -1,3 +1,5 @@
+//implemented in kernel/mod/utils/asm_utils.asm
+
 #ifndef IO_H
 #define IO_H
 

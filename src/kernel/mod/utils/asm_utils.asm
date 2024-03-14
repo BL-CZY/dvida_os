@@ -64,9 +64,9 @@ section .text
     ; 
     ; function: transfer things to random ports to wait for a lil bit
     io_wait:
-        push 0x00
-        push 0x80
-        call outb
+        mov dx, 0x80
+        mov al, 0x00
+        out dx, al
         ret
 
     ; arguments: none

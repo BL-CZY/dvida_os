@@ -11,6 +11,9 @@
         "irq.h": "c",
         "stdio.h": "c",
         "handlers.h": "c",
-        "asm_utils.h": "c"
+        "asm_utils.h": "c",
+        "pic.h": "c",
+        "pic_utils.h": "c",
+        "time.h": "c"
     }
 }

@@ -60,6 +60,10 @@ call gdt_init
 extern idt_init
 call idt_init
 
+; configure the PIC
+extern pic_init
+call pic_init
+
 extern kernel_main
 call kernel_main
 

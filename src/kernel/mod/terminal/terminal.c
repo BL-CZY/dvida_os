@@ -1,12 +1,14 @@
 #include "terminal.h"
 #include "../../lib/std/stdio.h"
+#include "../../lib/utils/asm_utils.h"
+
+io_state_t current_io_state;
 
 size_t terminal_row;
 size_t terminal_column;
 uint8_t terminal_color;
 uint16_t* terminal_buffer;
 
-enum io_state current_io_state;
 char command_buffer[50];
 size_t command_buffer_index;
 
@@ -20,7 +22,12 @@ size_t command_buffer_index;
 */
 void update_cursor_position(int x, int y)
 {
-    //TODO inb and outb
+    uint16_t pos = y * VGA_WIDTH + x;
+
+	outb(0x3D4, 0x0F);
+	outb(0x3D5, (uint8_t) (pos & 0xFF));
+	outb(0x3D4, 0x0E);
+	outb(0x3D5, (uint8_t) ((pos >> 8) & 0xFF));
 }
 
 /**

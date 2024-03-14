@@ -1,3 +1,5 @@
+//implemented in boot/interrupt/pic.c
+
 #ifndef PIC_UTILS_H
 #define PIC_UTILS_H
 
