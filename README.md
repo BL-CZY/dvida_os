@@ -12,6 +12,7 @@ I686_LD="path/to/cross-ld"
 
 <h3>Secondly</h3>
 On Nix-OS, you can run nix-shell at the root directory of the project, which will then have all other packages required
+I am looking into the feasibility of making the cross compiler into the shell.nix
 
 For non-Nix-OS, these are the packages required:<br />
 nasm<br />
