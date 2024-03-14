@@ -10,9 +10,9 @@ If you want to build this, you first of all need a gcc cross compiler toolchain 
 <h3>Secondly</h3>
 On Nix-OS, you can run nix-shell at the root directory of the project, which will then have all other packages required
 
-For non-Nix-OS, these are the packages required:
-pkgs.nasm
-pkgs.qemu
-pkgs.grub2
-pkgs.xorriso
-pkgs.gnumake
+For non-Nix-OS, these are the packages required:<br />
+nasm<br />
+qemu<br />
+grub2<br />
+xorriso<br />
+gnumake<br />
