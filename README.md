@@ -4,7 +4,7 @@ This is a simple operating system that I am developing based on the osdev wiki
 
 <h1>Build</h1>
 
-<h2>First of all</h2>
+<h3>First of all</h3>
 If you want to build this, you first of all need a gcc cross compiler toolchain with the target i686-elf
 
 <h3>Secondly</h3>
