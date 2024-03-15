@@ -20,7 +20,7 @@ void kernel_main(void)
     sleep(1);
 
     terminal_initialize();
-    printf("root ~$ ");
+    printf("root > ");
     current_io_state = stdin_command;
 
     for(;;)

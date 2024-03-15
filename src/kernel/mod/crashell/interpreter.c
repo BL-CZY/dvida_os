@@ -27,6 +27,14 @@ void clear()
     terminal_initialize();
 }
 
+void help()
+{
+    printf("Commands Available:\n");
+    printf("echo - Echo a string to stdout\n");
+    printf("clear - Clear the terminal output\n");
+    printf("help - Display list of available commands\n");
+}
+
 void execute_command()
 {
     //command search
@@ -38,7 +46,15 @@ void execute_command()
     {
         clear();
     }
+    else if(strcmp(command_buffer, "help", 4))
+    {
+        help();
+    }
+    else
+    {
+        printf("Command not found.\n");
+    }
     command_buffer_index = 0;
-    printf("root ~$ ");
+    printf("root > ");
     current_io_state = stdin_command;
 }
