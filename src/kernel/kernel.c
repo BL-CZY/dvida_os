@@ -3,7 +3,8 @@
 #include "lib/std/stdio.h"
 #include "lib/utils/asm_utils.h"
 #include "lib/utils/pic_utils.h"
-#include "mod/file_system/fs_driver.h"
+#include "lib/utils/time.h"
+#include "lib/file_system/file_system.h"
 
 void kernel_main(void)
 {
@@ -13,7 +14,11 @@ void kernel_main(void)
 
     enable_interrupts();
 
+    get_root();
     //enter the shell
+
+    sleep(1);
+
     terminal_initialize();
     printf("root > ");
     current_io_state = stdin_command;
