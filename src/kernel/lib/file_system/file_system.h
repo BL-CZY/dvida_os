@@ -5,11 +5,15 @@
 
 #include <stdint.h>
 
-extern uint32_t current_folder_lba_address;
+extern uint32_t current_directory_lba_address;
 struct file;
-struct folder;
+struct directory;
 
 void init_root();
 void get_root();
+
+int allocate_chunk();
+void create_directory(char* name);
+void create_file(char* name, char* file_extension);
 
 #endif

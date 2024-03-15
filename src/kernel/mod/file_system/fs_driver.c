@@ -21,7 +21,16 @@
 
 //about the file system
 /** description
- * I divided the 4 Gib disk into 4Kib chunks, which are 4 sectors
+ * I divided the 4 Gib disk into 4Kib chunks, which are 8 sectors
+ * The first chunk will be at 0, and the first 32 bytes will be used for root directory configuration
+*/
+/** about files and folders
+ * As written, the structs are about fsiles and folders.
+ * As the ptr variable will always be 4Kib aligned, there are 12 bits available for extra settings
+ * I will list the settings here: from the least significant bit from the most significant bit
+ * 0: must be set if used
+ * 1: set if it's a folder, unset if it's a file
+ * 2-3: privilege level
 */
 
 //about the allocation table
@@ -65,11 +74,11 @@ typedef struct file
     uint32_t* ptr; // pointer to the next chunk
 } file_t;
 
-typedef struct folder
+typedef struct directory
 {
     char folder_name[28]; // folder name
     uint32_t* ptr; // pointer to the next chunk
-} folder_t;
+} directory_t;
 
 struct sbf_address
 {
@@ -81,7 +90,7 @@ struct sbf_address
 typedef struct sbf_address sbf_address_t;
 
 uint8_t data_buffer[512];
-uint32_t current_folder_lba_address;
+uint32_t current_directory_lba_address;
 
 int wait_for_disk()
 {
@@ -194,6 +203,12 @@ sbf_address_t atla_to_sbf(uint32_t atla_address)
     return (sbf_address_t){((atla_address/8)/512)%32+1, (atla_address/8)%512, atla_address%8};
 }
 
+uint32_t sbf_to_atla(sbf_address_t sbf_address)
+{
+    //formula
+    return (sbf_address.sector_address - 1) * 512 * 8 + (sbf_address.byte_address) * 8 + (sbf_address.flag_address);
+}
+
 void set_allocation_table_flag(uint32_t atla_address)
 {
     sbf_address_t temp = atla_to_sbf(atla_address);
@@ -230,7 +245,7 @@ void init_root()
     data_buffer[3] = 'T';
     write_sector(0);
     //set current
-    current_folder_lba_address = 0;
+    current_directory_lba_address = 0;
 
     //initialize the allocation table
     data_buffer[0] = 0;
@@ -278,5 +293,203 @@ void get_root()
     if(!has_root_init)
     {
         init_root();
+    }
+
+    current_directory_lba_address = 0;
+}
+
+/**
+ * arguments: none
+ * 
+ * function: this will go through the allocatio table and find an allocatable chunk
+*/
+int allocate_chunk()
+{
+    //store the data_buffer
+    char temp_buffer[512];
+    for(int n = 0; n < 512; ++n)
+    {
+        temp_buffer[n] = data_buffer[n];
+    }
+    int atla_result = -1;
+    //get the allocation table
+    for(int i = 1; i < 32; ++i)
+    {
+        //read
+        read_sector_with_retry(i, 100);
+        //check every byte in a sector
+        for(int j = 0; j < 512; ++j)
+        {
+            for(int n = 0; n < 8; ++n)
+            {
+                if(((data_buffer[j] >> (7 - n)) & 0x1) == 0)
+                {
+                    //allocate
+                    data_buffer[j] = data_buffer[j] | (0x1 << (7 - n));
+                    atla_result = sbf_to_atla((sbf_address_t){i, j, n});
+                    write_sector(i);
+                    //restore the data buffer
+                    for(int n = 0; n < 512; ++n)
+                    {
+                        data_buffer[n] = temp_buffer[n];
+                    }
+                    return atla_result;
+                }
+            }
+        }
+    }
+
+    return atla_result;
+}
+
+void create_directory(char* name)
+{
+    //TODO error handling
+    //read an entire chunk
+    for(int i = 0; i < 8; ++i)
+    {
+        read_sector_with_retry(current_directory_lba_address + i, 100);
+        for(int j = 0; j < 512; j += 32)
+        {
+            //this is the root directory configuration
+            if(current_directory_lba_address + i == 0 && j == 0)
+            {
+                continue;
+            }
+
+            //get the last bytes of the 32 bytes block
+            //check if the last bit of the block is 1
+            if((data_buffer[j + 31] & 0x1) != 0x1)
+            {
+                //if not then it's empty
+                //allocate
+                //sort out the information
+                //address, multiply by 4096 to convert to the actual byte address
+                uint32_t byte_address = allocate_chunk() << 12;
+                char address_buffer[4];
+                address_buffer[0] = (byte_address >> 24) & 0xFF; // Most significant byte
+                address_buffer[1] = (byte_address >> 16) & 0xFF;
+                address_buffer[2] = (byte_address >> 8) & 0xFF;
+                address_buffer[3] = byte_address & 0xFF; // Least significant byte
+                //default settings
+                //set present
+                address_buffer[3] = address_buffer[3] | 0x1;
+                //set folder
+                address_buffer[3] = address_buffer[3] | 0x2;
+                //name
+                char name_buffer[28];
+                int name_length = strlen(name);
+                for(int n = 0; n < 28; ++n)
+                {
+                    //if exceeds the length inputed
+                    if(n >= name_length)
+                    {
+                        name_buffer[n] = '\0';
+                    }
+                    else
+                    {
+                        //otherwise set them equal
+                        name_buffer[n] = name[n];
+                    }
+                }
+                //write to the data_buffer and write to the sector
+                for(int n = 0; n < 28; ++n)
+                {
+                    data_buffer[j + n] = name_buffer[n];
+                }
+                for(int n = 28; n < 32; ++n)
+                {
+                    data_buffer[j + n] = address_buffer[n - 28];
+                }
+                write_sector(current_directory_lba_address + i);
+                return;
+            }
+        }
+    }
+}
+
+void create_file(char* name, char* file_extension)
+{
+    //TODO error handling
+    //read an entire chunk
+    for(int i = 0; i < 8; ++i)
+    {
+        read_sector_with_retry(current_directory_lba_address + i, 100);
+        for(int j = 0; j < 512; j += 32)
+        {
+            //this is the root directory configuration
+            if(current_directory_lba_address + i == 0 && j == 0)
+            {
+                continue;
+            }
+
+            //get the last bytes of the 32 bytes block
+            //check if the last bit of the block is 1
+            if((data_buffer[j + 31] & 0x1) != 0x1)
+            {
+                //if not then it's empty
+                //allocate
+                //sort out the information
+                //address, multiply by 4096 to convert to the actual byte address
+                uint32_t byte_address = allocate_chunk() << 12;
+                char address_buffer[4];
+                address_buffer[0] = (byte_address >> 24) & 0xFF; // Most significant byte
+                address_buffer[1] = (byte_address >> 16) & 0xFF;
+                address_buffer[2] = (byte_address >> 8) & 0xFF;
+                address_buffer[3] = byte_address & 0xFF; // Least significant byte
+                //default settings
+                //set present
+                address_buffer[3] = address_buffer[3] | 0x1;
+                //set folder
+                address_buffer[3] = address_buffer[3] | 0x0;
+                //name
+                char name_buffer[24];
+                int name_length = strlen(name);
+                for(int n = 0; n < 24; ++n)
+                {
+                    //if exceeds the length inputed
+                    if(n >= name_length)
+                    {
+                        name_buffer[n] = '\0';
+                    }
+                    else
+                    {
+                        //otherwise set them equal
+                        name_buffer[n] = name[n];
+                    }
+                }
+                //extension
+                char file_extension_buffer[4];
+                int file_extension_length = strlen(file_extension);
+                for(int n = 0; n < 4; ++n)
+                {
+                    //if exceeds the length inputed
+                    if(n >= file_extension_length)
+                    {
+                        file_extension_buffer[n] = '\0';
+                    }
+                    else
+                    {
+                        //otherwise set them equal
+                        file_extension_buffer[n] = file_extension[n];
+                    }
+                }
+                //write to the data_buffer and write to the sector
+                for(int n = 0; n < 24; ++n)
+                {
+                    data_buffer[j + n] = name_buffer[n];
+                }
+                for(int n = 24; n < 28; ++n)
+                {
+                    data_buffer[j + n] = file_extension_buffer[n - 24];
+                }
+                for(int n = 28; n < 32; ++n)
+                {
+                    data_buffer[j + n] = address_buffer[n - 28];
+                }
+                write_sector(current_directory_lba_address + i);
+                return;
+            }
+        }
     }
 }
