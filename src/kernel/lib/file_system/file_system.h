@@ -3,4 +3,6 @@
 #ifndef FILE_SYSTEM_H
 #define FILE_SYSTEM_H
 
+#include <stdint.h>
+
 #endif

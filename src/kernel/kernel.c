@@ -3,7 +3,7 @@
 #include "lib/std/stdio.h"
 #include "lib/utils/asm_utils.h"
 #include "lib/utils/pic_utils.h"
-#include "../boot/interrupt/pic.h"
+#include "mod/file_system/fs_driver.h"
 
 void kernel_main(void)
 {
@@ -12,6 +12,14 @@ void kernel_main(void)
     printf("Hello World!\n");
 
     enable_interrupts();
+
+    if(read_sector(0) == 0)
+    {
+        for(int i = 0; i < 512; ++i)
+        {
+            printf("%u", data_buffer[i]);
+        }
+    }
 
     for(;;)
     {

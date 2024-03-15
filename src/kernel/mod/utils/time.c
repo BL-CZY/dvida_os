@@ -1,4 +1,5 @@
 #include "../../lib/utils/time.h"
+#include "../../lib/std/stdio.h"
 
 int global_timer = 0;
 
@@ -11,6 +12,9 @@ int global_timer = 0;
 void sleep(int time)
 {
     int temp = global_timer + time;
-    while(global_timer != time){}
+    while(global_timer != temp)
+    {
+        asm("hlt");
+    }
     return;
 }

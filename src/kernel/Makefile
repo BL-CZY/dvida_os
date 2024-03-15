@@ -2,12 +2,16 @@ include $(MAKE_UTILS)/common.mk
 
 .PHONY: kernel
 
-kernel: $(BUILD_DIR)/time.o \
+kernel: $(BUILD_DIR)/file_system.o \
+		$(BUILD_DIR)/time.o \
 		$(BUILD_DIR)/asm_utils.o \
 		$(BUILD_DIR)/handlers.o \
 		$(BUILD_DIR)/keyboard_driver.o \
 		$(BUILD_DIR)/terminal.o \
 		$(BUILD_DIR)/kernel.o
+
+$(BUILD_DIR)/file_system.o: mod/file_system/fs_driver.c
+	$(CC) -c $< -o $@ $(CC_FLAGS)
 
 $(BUILD_DIR)/time.o: mod/utils/time.c
 	$(CC) -c $< -o $@ $(CC_FLAGS)
