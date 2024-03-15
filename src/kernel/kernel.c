@@ -13,13 +13,10 @@ void kernel_main(void)
 
     enable_interrupts();
 
-    if(read_sector(0) == 0)
-    {
-        for(int i = 0; i < 512; ++i)
-        {
-            printf("%u", data_buffer[i]);
-        }
-    }
+    //enter the shell
+    terminal_initialize();
+    printf("root ~$ ");
+    current_io_state = stdin_command;
 
     for(;;)
     {

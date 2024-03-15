@@ -8,6 +8,7 @@
 	    pkgs.xorriso
       pkgs.gnumake
 	    pkgs.dhex
+      pkgs.cloc
     ];
     
     shellHook = ''

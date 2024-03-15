@@ -9,9 +9,6 @@ size_t terminal_column;
 uint8_t terminal_color;
 uint16_t* terminal_buffer;
 
-char command_buffer[50];
-size_t command_buffer_index;
-
 /**
  * arguments: 
  *  integer x

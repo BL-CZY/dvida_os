@@ -1,6 +1,7 @@
 #include "keyboard_driver.h"
 #include "../../lib/std/keyboard.h"
 #include "../../lib/std/stdio.h"
+#include "../../lib/shell/shell.h"
 
 #pragma region macros
 
@@ -143,8 +144,8 @@ int capslock = 0;
 
 void end_of_command()
 {
-    // current_io_state = stdout;
-    // execute_command(command_buffer);
+    current_io_state = stdout;
+    execute_command();
 }
 
 void process_stdin_common(keycode keycode, char* down, char* up)
@@ -189,77 +190,77 @@ void process_stdin_common(keycode keycode, char* down, char* up)
 
 void process_stdin_command(keycode keycode, char* down, char* up)
 {
-    // if(keycode == keycode_backspace)
-    // {
-    //     //if command buffer index is not 0
-    //     if(command_buffer_index != 0)
-    //     {
-    //         //delete the previous character
-    //         erasef(1);
-    //         //delete the buffer
-    //         command_buffer[command_buffer_index] = 0;
-    //         --command_buffer_index;
-    //     }
-    //     return;
-    // }
-    // else if(keycode == keycode_enter)
-    // {
-    //     //if enter and not pressing shift
-    //     if(!keyboard[keycode_left_shift])
-    //     {
-    //         //end of command
-    //         printf("\n");
-    //         end_of_command();
-    //         return;
-    //     }
-    // }
+    if(keycode == keycode_backspace)
+    {
+        //if command buffer index is not 0
+        if(command_buffer_index != 0)
+        {
+            //delete the previous character
+            erasef(1);
+            //delete the buffer
+            command_buffer[command_buffer_index] = 0;
+            --command_buffer_index;
+        }
+        return;
+    }
+    else if(keycode == keycode_enter)
+    {
+        //if enter and not pressing shift
+        if(!keyboard[keycode_left_shift])
+        {
+            //end of command
+            printf("\n");
+            end_of_command();
+            return;
+        }
+    }
 
-    // if(command_buffer_index == 50)
-    // {
-    //     //end of command
-    //     printf("\n");
-    //     end_of_command();
-    //     return;
-    // }
+    if(command_buffer_index == 50)
+    {
+        //end of command
+        printf("\n");
+        end_of_command();
+        return;
+    }
 
-    // process_stdin_common(keycode, down, up);
-    // if(keycode >= 10 && keycode < 36)
-    // {
-    //     if(!capslock)
-    //     {
-    //         if(keyboard[keycode_left_shift])
-    //         {
-    //             command_buffer[command_buffer_index] = *up;
-    //         }
-    //         else
-    //         {
-    //             command_buffer[command_buffer_index] = *down;
-    //         }
-    //     }
-    //     else
-    //     {
-    //         if(keyboard[keycode_left_shift])
-    //         {
-    //             command_buffer[command_buffer_index] = *down;
-    //         }
-    //         else
-    //         {
-    //             command_buffer[command_buffer_index] = *up;
-    //         }
-    //     }
-    // }
-    // else
-    // {
-    //     if(keyboard[keycode_left_shift])
-    //     {
-    //         command_buffer[command_buffer_index] = *up;
-    //     }
-    //     else
-    //     {
-    //         command_buffer[command_buffer_index] = *down;
-    //     }
-    // }
-    // ++command_buffer_index;
+    process_stdin_common(keycode, down, up);
+    if(keycode >= 10 && keycode < 36)
+    {
+        if(!capslock)
+        {
+            if(keyboard[keycode_left_shift])
+            {
+                command_buffer[command_buffer_index] = *up;
+            }
+            else
+            {
+                command_buffer[command_buffer_index] = *down;
+            }
+        }
+        else
+        {
+            if(keyboard[keycode_left_shift])
+            {
+                command_buffer[command_buffer_index] = *down;
+            }
+            else
+            {
+                command_buffer[command_buffer_index] = *up;
+            }
+        }
+    }
+    else
+    {
+        if(keyboard[keycode_left_shift])
+        {
+            command_buffer[command_buffer_index] = *up;
+        }
+        else
+        {
+            command_buffer[command_buffer_index] = *down;
+        }
+    }
+    ++command_buffer_index;
 }
 
 void process_stdin_data(keycode keycode, char* down, char* up)
