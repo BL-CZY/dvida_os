@@ -17,7 +17,7 @@ typedef struct interrupt_info
 //irq_0: timer
 void irq_0()
 {
-    ++global_timer;
+    update();
 }
 
 //irq_1: keyboard
