@@ -15,7 +15,6 @@ void kernel_main(void)
     enable_interrupts();
 
     get_root();
-    create_file("test", "txt");
     //enter the shell
 
     sleep(1);
