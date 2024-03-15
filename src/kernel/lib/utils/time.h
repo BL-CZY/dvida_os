@@ -7,7 +7,7 @@
 
 extern int global_timer;
 
-void update();
+void on_update();
 void sleep(int time);
 
 #endif

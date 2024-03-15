@@ -5,4 +5,11 @@
 
 #include <stdint.h>
 
+extern uint32_t current_folder_lba_address;
+struct file;
+struct folder;
+
+void init_root();
+void get_root();
+
 #endif

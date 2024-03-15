@@ -8,7 +8,7 @@ int global_timer = 0;
  * 
  * function: it will be called every time the pic timer fires an interrupt
 */
-void update()
+void on_update()
 {
     ++global_timer;
 }
