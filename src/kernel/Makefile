@@ -18,7 +18,7 @@ $(BUILD_DIR)/crashell.o: mod/crashell/interpreter.c
 $(BUILD_DIR)/file_system.o: mod/file_system/fs_driver.c
 	$(CC) -c $< -o $@ $(CC_FLAGS)
 
-$(BUILD_DIR)/time.o: mod/utils/time.c
+$(BUILD_DIR)/time.o: mod/time/time.c
 	$(CC) -c $< -o $@ $(CC_FLAGS)
 
 $(BUILD_DIR)/asm_utils.o: mod/utils/asm_utils.asm

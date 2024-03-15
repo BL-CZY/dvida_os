@@ -142,12 +142,27 @@
 int keyboard[256] = {0};
 int capslock = 0;
 
+/**
+ * arguments: none
+ * 
+ * function: when the function is called, it will stop all inputs and ask the shell to interprete it
+*/
 void end_of_command()
 {
     current_io_state = stdout;
     execute_command();
 }
 
+/**
+ * arguments:
+ *  a keycode keycode
+ *  a char* down
+ *  a char* up
+ * 
+ * function: this will look into the keycode, and process it
+ * if the key is a character, it will check if capslock is on, if so, up will be printed without shift, vice versa
+ * for non-letters, regardless of the capslock, down will be printed without shift, vice versa
+*/
 void process_stdin_common(keycode keycode, char* down, char* up)
 {
     if(keycode >= 10 && keycode < 36)
@@ -188,6 +203,23 @@ void process_stdin_common(keycode keycode, char* down, char* up)
     }
 }
 
+/**
+ * arguments:
+ *  a keycode keycode
+ *  a char* down
+ *  a char* up
+ * 
+ * function: this will look into the keycode, and process it
+ * if the key is a character, it will check if capslock is on, if so, up will be printed without shift, vice versa
+ * for non-letters, regardless of the capslock, down will be printed without shift, vice versa
+ * 
+ * this function will also record the input in the command buffer, which is 50 characters long
+ * if a command exceeds the limit, it will automatically execute it
+ * 
+ * there are also some functional keys
+ * like backspace would clear one element in the command buffer
+ * enter without shift would execute the command
+*/
 void process_stdin_command(keycode keycode, char* down, char* up)
 {
     if(keycode == keycode_backspace)
@@ -263,6 +295,19 @@ void process_stdin_command(keycode keycode, char* down, char* up)
     ++command_buffer_index;
 }
 
+/**
+ * arguments:
+ *  a keycode keycode
+ *  a char* down
+ *  a char* up
+ * 
+ * function: this will look into the keycode, and process it
+ * if the key is a character, it will check if capslock is on, if so, up will be printed without shift, vice versa
+ * for non-letters, regardless of the capslock, down will be printed without shift, vice versa
+ * 
+ * there are also some functional keys
+ * like backspace would clear one element in the command buffer
+*/
 void process_stdin_data(keycode keycode, char* down, char* up)
 {
     if(keycode == keycode_backspace)
@@ -279,7 +324,14 @@ void process_stdout()
 
 }
 
-
+/**
+ * arguments:
+ *  a keycode keycode
+ *  a char* down
+ *  a char* up
+ * 
+ * function: this will check the current_io_state the process the keys accordingly
+*/
 void process_printable_key(keycode keycode, char* down, char* up)
 {
     if(current_io_state == stdin_data)
