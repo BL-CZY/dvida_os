@@ -25,4 +25,4 @@ gnumake<br />
 <h3><font color="red">DO NOT RUN THIS IN A REAL MACHINE!!! THE IMMATURITY OF THIS PROJECT MIGHT ERASE YOUR DISK!!!</font></h3>
 To run, a 4Gib raw disk image must be created<br />
 You can use qemu-img to do so<br />
-Then, simply run ./run would emulate the iso in qemu
+Then, simply run ./run.sh would emulate the iso in qemu
