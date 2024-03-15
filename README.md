@@ -20,3 +20,9 @@ qemu<br />
 grub2<br />
 xorriso<br />
 gnumake<br />
+
+<h1>Run</h1>
+<h3><font color="red">DO NOT RUN THIS IN A REAL MACHINE!!! THE IMMATURITY OF THIS PROJECT MIGHT ERASE YOUR DISK!!!</font></h3>
+To run, a 4Gib raw disk image must be created
+You can use qemu-img to do so
+Then, simply run ./run would emulate the iso in qemu
