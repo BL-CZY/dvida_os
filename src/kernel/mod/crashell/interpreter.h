@@ -3,5 +3,6 @@
 
 void echo();
 void clear();
+void help();
 
 #endif

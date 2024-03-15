@@ -15,7 +15,7 @@ void kernel_main(void)
 
     //enter the shell
     terminal_initialize();
-    printf("root ~$ ");
+    printf("root > ");
     current_io_state = stdin_command;
 
     for(;;)
