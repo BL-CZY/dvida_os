@@ -50,8 +50,10 @@ section .text
 global gdt_init
 
 gdt_init: ; initialize gdt
+    pushad
     lgdt[gdt_descriptor] ; load the gdt
     call reload_segment ; reload the segment
+    popad
     ret
 
 reload_segment:

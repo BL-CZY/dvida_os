@@ -60,15 +60,15 @@ call gdt_init
 extern idt_init
 call idt_init
 
+sti
+
 ; now do paging
-; extern paging_init
-; call paging_init
+extern paging_init
+call paging_init
 
 ; configure the PIC
 extern pic_init
 call pic_init
-
-sti
 
 extern kernel_main
 call kernel_main

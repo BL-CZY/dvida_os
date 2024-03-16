@@ -10,7 +10,9 @@ ACCESSED equ 0x20 ; otherwise not accessed
 FOUR_MIB_SIZE equ 0x80 ; otherwise 4Kib size ;? page directory entry only
 ;? NOT IMPORTANT FOR 4Kib PAGES equ 0x200
 
-section .data
+section .text
+
+align 4096
 
 page_directory:
     times 1024 dd PRESENT | WRITABLE ; reserve space for the page directory
@@ -23,11 +25,10 @@ page_table_%+i:
 %assign i i + 1
 %endrep
 
-section .text
-
 global paging_init
 
 paging_init:
+    pushad
     %assign i 0
     %assign j 0
     %rep 1024
@@ -50,7 +51,8 @@ paging_init:
     mov eax, page_directory ; load the page directory
     mov cr3, eax ; set cr3
 
-    mov eax, cr0
-    or eax, 0x80000000
-    mov cr0, eax
+    ; mov eax, cr0
+    ; or eax, 0x80000000
+    ; mov cr0, eax
+    popad
     ret
