@@ -16,6 +16,8 @@ void kernel_main(void)
 
     get_root();
     //enter the shell
+    create_directory("test");
+    create_file("test", "txt");
 
     sleep(1);
 

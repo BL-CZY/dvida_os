@@ -4,7 +4,9 @@ BUILD_DIR=build
 BUILD_BOOT_DIR=build/boot
 BUILD_KERNEL_DIR=build/kernel
 
-basic: clean init boot kernel bin iso
+.PHONY: all
+
+all: clean init boot kernel bin iso
 
 iso:
 	grub-mkrescue -o build/os.iso build/isodir

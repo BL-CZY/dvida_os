@@ -26,10 +26,10 @@
 */
 /** the root directory
  * The structure of the root directory is a little bit different from others
- * The minimal root directory contains 32 sectors rather than 8
- * But only the first 1 sector is usable
+ * The minimal root directory contains 40 sectors rather than 8
+ * But only the last 8 sector is usable
  * The last 31 sectors is the allocation table
- * And the first 32 bytes are reserved for settings
+ * And the first sector are reserved for settings
  * TODO You can append it
 */
 /** about files and folders
@@ -263,6 +263,7 @@ void init_root()
     set_allocation_table_flag(1);
     set_allocation_table_flag(2);
     set_allocation_table_flag(3);
+    set_allocation_table_flag(4);
 }
 
 //get root dir
@@ -297,7 +298,8 @@ void get_root()
         init_root();
     }
 
-    current_directory_lba_address = 0;
+    //the first 32 sectors are used
+    current_directory_lba_address = 32;
 }
 
 /**
@@ -353,16 +355,6 @@ void create_directory(char* name)
         read_sector_with_retry(current_directory_lba_address + i, 100);
         for(int j = 0; j < 512; j += 32)
         {
-            //this is the root directory configuration
-            if(current_directory_lba_address + i == 0 && j == 0)
-            {
-                continue;
-            }
-            else if(current_directory_lba_address + i >= 2 && current_directory_lba_address + i <= 32)
-            {
-                continue;
-            }
-
             //get the last bytes of the 32 bytes block
             //check if the last bit of the block is 1
             if((data_buffer[j + 31] & 0x1) != 0x1)
@@ -423,16 +415,6 @@ void create_file(char* name, char* file_extension)
         read_sector_with_retry(current_directory_lba_address + i, 100);
         for(int j = 0; j < 512; j += 32)
         {
-            //this is the root directory configuration
-            if(current_directory_lba_address + i == 0 && j == 0)
-            {
-                continue;
-            }
-            else if(current_directory_lba_address + i >= 2 && current_directory_lba_address + i <= 32)
-            {
-                continue;
-            }
-
             //get the last bytes of the 32 bytes block
             //check if the last bit of the block is 1
             if((data_buffer[j + 31] & 0x1) != 0x1)
@@ -502,4 +484,19 @@ void create_file(char* name, char* file_extension)
             }
         }
     }
+}
+
+char* fetch_current_dir_directories()
+{
+
+}
+
+char* fetch_current_dir_files()
+{
+
+}
+
+char* fetch_current_dir_contents()
+{
+    
 }

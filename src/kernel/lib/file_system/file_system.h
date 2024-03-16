@@ -16,4 +16,8 @@ int allocate_chunk();
 void create_directory(char* name);
 void create_file(char* name, char* file_extension);
 
+char* fetch_current_dir_directories();
+char* fetch_current_dir_files();
+char* fetch_current_dir_contents();
+
 #endif
