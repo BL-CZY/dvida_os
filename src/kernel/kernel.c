@@ -1,6 +1,7 @@
 #include <stdint.h>
 
 #include "lib/std/stdio.h"
+#include "mod/terminal/terminal.h"
 #include "lib/utils/asm_utils.h"
 #include "lib/utils/pic_utils.h"
 #include "lib/utils/time.h"
@@ -12,12 +13,8 @@ void kernel_main(void)
     terminal_initialize();
     printf("Hello World!\n");
 
-    enable_interrupts();
-
     get_root();
     //enter the shell
-    create_directory("test");
-    create_file("test", "txt");
 
     sleep(1);
 

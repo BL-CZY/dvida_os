@@ -3,6 +3,7 @@
 #include "../../lib/utils/time.h"
 #include "../../lib/utils/asm_utils.h"
 #include "../../lib/std/stdio.h"
+#include "../../lib/utils/mem_utils.h"
 
 // ATA Ports
 #define ATA_DATA_PORT 0x1F0

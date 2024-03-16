@@ -44,6 +44,7 @@ extern enum io_state current_io_state;
 extern char command_buffer[50];
 extern size_t command_buffer_index;
 
+void update_cursor_position(int x, int y);
 void terminal_putentryat(char c, uint8_t color, size_t x, size_t y);
 void terminal_advance();
 void terminal_newline();

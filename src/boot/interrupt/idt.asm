@@ -15,9 +15,11 @@ section .text
 global idt_init
 
 extern isr_stub_table
+extern printf
+
+msg: db "here"
 
 idt_init:
-
     mov eax, 0 ; initialize the counter
 
     .set_entry:
