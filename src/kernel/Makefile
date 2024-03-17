@@ -5,6 +5,7 @@ include $(MAKE_UTILS)/common.mk
 kernel: $(BUILD_DIR)/crashell.o \
 		$(BUILD_DIR)/file_system.o \
 		$(BUILD_DIR)/time.o \
+		$(BUILD_DIR)/mem_utils.o \
 		$(BUILD_DIR)/asm_utils.o \
 		$(BUILD_DIR)/str_utils.o \
 		$(BUILD_DIR)/handlers.o \
@@ -19,6 +20,9 @@ $(BUILD_DIR)/file_system.o: mod/file_system/fs_driver.c
 	$(CC) -c $< -o $@ $(CC_FLAGS)
 
 $(BUILD_DIR)/time.o: mod/time/time.c
+	$(CC) -c $< -o $@ $(CC_FLAGS)
+
+$(BUILD_DIR)/mem_utils.o: mod/utils/mem_utils.c
 	$(CC) -c $< -o $@ $(CC_FLAGS)
 
 $(BUILD_DIR)/asm_utils.o: mod/utils/asm_utils.asm

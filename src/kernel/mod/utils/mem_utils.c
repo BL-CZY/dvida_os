@@ -1,4 +1,5 @@
 #include "../../lib/utils/mem_utils.h"
+#include "../../lib/std/stdio.h"
 
 #include <stdint.h>
 
@@ -10,24 +11,52 @@ const void* heap_start = (void*)HEAP_START_ADDRESS;
 const void* heap_end = (void*)HEAP_END_ADDRESS;
 void* heap_current_address = (void*)HEAP_START_ADDRESS;
 
-void memset(void* start, char val, size_t size)
+void* memset(void* start, int val, size_t size)
 {
-    for(size_t i = 0; i < size; ++i)
+    uint8_t* p = (uint8_t*)start;
+ 
+    for(size_t i = 0; i < size; i++)
     {
-        *(char*)(start + i) = val;
+        p[i] = (uint8_t)val;
     }
+ 
+    return start;
 }
-void memcopy(void* from, void* to, size_t size)
+
+void* memcpy(void* dest, const void* src, size_t n)
 {
-    for(size_t i = 0; i < size; ++i)
+    uint8_t* pdest = (uint8_t*)dest;
+    const uint8_t* psrc = (const uint8_t*)src;
+ 
+    for(size_t i = 0; i < n; i++)
     {
-        *(char*)(to + i) = *(char*)(from + i);
+        pdest[i] = psrc[i];
     }
+ 
+    return dest;
 }
-void memmove(void* from, void* to, size_t size)
+
+void* memmove(void *dest, const void *src, size_t n)
 {
-    memcopy(from, to, size);
-    memset(from, NULL, size);
+    uint8_t *pdest = (uint8_t *)dest;
+    const uint8_t *psrc = (const uint8_t *)src;
+ 
+    if(src > dest)
+    {
+        for(size_t i = 0; i < n; i++)
+        {
+            pdest[i] = psrc[i];
+        }
+    } 
+    else if(src < dest) 
+    {
+        for(size_t i = n; i > 0; i--)
+        {
+            pdest[i-1] = psrc[i-1];
+        }
+    }
+ 
+    return dest;
 }
 
 void* malloc(size_t size)
@@ -50,15 +79,9 @@ void* malloc(size_t size)
     size_t block_num = 1 + (size/4 + (size%4 > 0));
     int lazy_alloc = 1;
 
-    for(size_t i = 0; i < block_num * 4; ++i)
+    if(heap_current_address + size > heap_end)
     {
-        //check if the next blocks are allocatable
-        if(*(char*)(heap_current_address + i) != NULL)
-        {
-            //not allocatable
-            lazy_alloc = 0;
-            break;
-        }
+        lazy_alloc = 0;
     }
 
     if(lazy_alloc)
@@ -81,14 +104,16 @@ void free(void* target)
     size_t size = (size_t)(*(uint32_t*)start);
     for(size_t i = 0; i < size; ++i)
     {
-        *(char*)(start + i) = NULL;
+        *(char*)(start + i) = '\0';
     }
 }
 
-void realloc(void* target, size_t new_size)
+void* realloc(void* target, size_t new_size)
 {
     void* start = target;
     size_t size = *(size_t*)(start - 4);
-    memcopy(start, malloc(new_size), size);
+    void* new_address = malloc(new_size);
+    memcpy(start, new_address, size);
     free(start);
+    return new_address;
 }

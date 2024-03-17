@@ -4,9 +4,6 @@
 #include "../../lib/utils/time.h"
 #include "../../lib/std/stdio.h"
 #include "../../lib/std/keyboard.h"
-#include "../../mod/terminal/terminal.h"
-#include "../../mod/file_system/fs_driver.h"
-#include "../../lib/file_system/file_system.h"
 
 typedef struct interrupt_info
 {
