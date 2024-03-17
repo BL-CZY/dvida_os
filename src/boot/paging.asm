@@ -12,21 +12,25 @@ FOUR_MIB_SIZE equ 0x80 ; otherwise 4Kib size ;? page directory entry only
 
 section .data
 
+align 4096
+
 page_directory:
     times 1024 dd PRESENT | WRITABLE ; reserve space for the page directory
 
 ; reserve space for page tables
 %assign i 0
 %rep 1024
-page_table_%+i: 
+align 4096
+
+page_table_%+i:
     times 1024 dd PRESENT | WRITABLE
 %assign i i + 1
 %endrep
 
 section .text
 
-align 4096
-
+extern paging_debug_tool
+global page_directory
 global paging_init
 
 paging_init:
@@ -43,12 +47,11 @@ paging_init:
         inc ebx
         cmp ebx, 1024
         jb fill_page_table_%+i
+    mov eax, page_table_%+i
+    or dword [page_directory + %+i * 4], eax
     %assign i i + 1
     %assign j j + 0x400000
     %endrep
-
-    mov eax, page_table_0
-    or dword [page_directory], eax
 
     mov eax, page_directory ; load the page directory
     mov cr3, eax ; set cr3
