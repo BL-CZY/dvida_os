@@ -15,7 +15,7 @@
     ];
     
     shellHook = ''
-      export I686_GCC="$HOME/opt/cross-i686/bin/i686-elf-gcc"
-      export I686_LD="$HOME/opt/cross-i686/bin/i686-elf-ld"
+      export I686_GCC=i686-elf-gcc
+      export I686_LD=i686-elf-ld
     '';
 }
