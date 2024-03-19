@@ -9,6 +9,9 @@
       pkgs.gnumake
 	    pkgs.dhex
       pkgs.cloc
+      pkgsCross.i686-embedded.buildPackages.gcc
+      pkgsCross.i686-embedded.buildPackages.libgcc
+      pkgsCross.i686-embedded.buildPackages.binutils
     ];
     
     shellHook = ''
