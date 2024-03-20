@@ -246,9 +246,9 @@ void init_root()
 
     //clear the 1st sector while initializing the DFRS magic word
     data_buffer[0] = 'D';
-    data_buffer[1] = 'F';
-    data_buffer[2] = 'R';
-    data_buffer[3] = 'T';
+    data_buffer[1] = 'V';
+    data_buffer[2] = 'F';
+    data_buffer[3] = 'S';
     write_sector(0);
     //set current
     current_directory_lba_address = 0;
@@ -270,6 +270,7 @@ void init_root()
     set_allocation_table_flag(1);
     set_allocation_table_flag(2);
     set_allocation_table_flag(3);
+    //for root
     set_allocation_table_flag(4);
 }
 
@@ -294,7 +295,7 @@ void get_root()
     magic_word[2] = data_buffer[2];
     magic_word[3] = data_buffer[3];
     
-    if(magic_word[0] == 'D' && magic_word[1] == 'F' && magic_word[2] == 'R' && magic_word[3] == 'T')
+    if(magic_word[0] == 'D' && magic_word[1] == 'V' && magic_word[2] == 'F' && magic_word[3] == 'S')
     {
         has_root_init = 1;
     }
@@ -353,16 +354,15 @@ int allocate_chunk()
     return atla_result;
 }
 
-
 void fetch_current_dir_contents(int lba_address)
 {
     for (int i = 0; i < 8; ++i)
     {
         //read
-        read_sector_with_retry(lba_address + i);
+        read_sector_with_retry(lba_address + i, 100);
         for (int j = 0; j < 512; ++j)
         {
-            directory_content_buffer[i * 512 + j];
+            directory_content_buffer[i * 512 + j] = data_buffer[j];
         }
     }
 }
@@ -378,22 +378,25 @@ int check_repeat_file_or_directory_name(int type, char* name)
     fetch_current_dir_contents(current_directory_lba_address);
     for(int i = 0; i < 127; ++i)
     {
-        if(directory_content_buffer[i * 32 + 30] != type)
+        //as the second bit will be 1 if it's a directory, here it will check it
+        if(((directory_content_buffer[i * 32 + 31] & 0x1) != 0x1) ||
+           (directory_content_buffer[i * 32 + 31] & 0x2) != (type << 1))
         {
             continue;
         }
         int same = 1;
         for(int j = 0; j < 28; ++j)
         {
-            if(directory_content_buffer[i * 32 + j] != name[j])
+            if(directory_content_buffer[i * 32 + j] != temp[j])
             {
+                printf("%u", j);
                 same = 0;
                 break;
             }
         }
-        if(same)
+        if(same == 1)
         {
-            printf("can't create file/folder with same names/n");
+            printf("can't create file/folder with same names\n");
             return 0;
         }
     }
@@ -415,7 +418,7 @@ void create_directory(char* name)
             temp[i] = name[i];
         }
     }
-    if(!check_repeat_file_or_directory_name(temp))
+    if(!check_repeat_file_or_directory_name(1, temp))
     {
         return;
     }
@@ -480,7 +483,6 @@ void create_directory(char* name)
 
 void create_file(char* name, char* file_extension)
 {
-
     int name_len = strlen(name);
     int extension_len = strlen(file_extension);
     char temp[28];
@@ -499,14 +501,14 @@ void create_file(char* name, char* file_extension)
     {
         if(i >= extension_len)
         {
-            temp[i] = '\0';
+            temp[i + 24] = '\0';
         }
         else
         {
-            temp[i + 24] = extension[i];    
+            temp[i + 24] = file_extension[i];    
         }
     }
-    if(!check_repeat_file_or_directory_name(temp))
+    if(!check_repeat_file_or_directory_name(0, temp))
     {
         return;
     }

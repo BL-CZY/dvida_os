@@ -5,6 +5,7 @@
 #include "lib/utils/mem_utils.h"
 #include "lib/utils/time.h"
 #include "lib/file_system/file_system.h"
+#include "mod/file_system/fs_driver.h"
 
 void kernel_main(void)
 {
@@ -16,10 +17,15 @@ void kernel_main(void)
     //enter the shell
 
     sleep(1);
-
+    
     terminal_initialize();
     printf("root > ");
     current_io_state = stdin_command;
+
+    create_directory("test");
+    create_directory("test");
+    create_file("test", "txt");
+    create_file("test", "txt");
 
     for(;;)
     {
