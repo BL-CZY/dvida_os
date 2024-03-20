@@ -17,11 +17,7 @@ void kernel_main(void)
 
     sleep(1);
 
-    char* test = malloc(3);
-    test[0] = 'a';
-    char test_a = *test;
-    printf(&test_a);
-
+    *(char*)(0x80000000) = 'a';
     for(;;)
     {
         halt_cpu();
