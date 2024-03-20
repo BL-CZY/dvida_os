@@ -98,7 +98,13 @@ struct sbf_address
 
 typedef struct sbf_address sbf_address_t;
 
+//this buffer is used to read and write a sector
 uint8_t data_buffer[512];
+//this buffer will store the information about the contents in a directory
+//there are 4096 bytes in a chunk
+//and is's divided into 32 bytes subchunks
+//every subchunk would contain the information
+char directory_content_buffer[4096];
 uint32_t current_directory_lba_address;
 
 int wait_for_disk()
@@ -347,8 +353,72 @@ int allocate_chunk()
     return atla_result;
 }
 
+
+void fetch_current_dir_contents(int lba_address)
+{
+    for (int i = 0; i < 8; ++i)
+    {
+        //read
+        read_sector_with_retry(lba_address + i);
+        for (int j = 0; j < 512; ++j)
+        {
+            directory_content_buffer[i * 512 + j];
+        }
+    }
+}
+
+//at this point, if type = 1, it's a folder, otherwise it's a file
+int check_repeat_file_or_directory_name(int type, char* name)
+{
+    char temp[28];
+    for (int i = 0; i < 28; ++i)
+    {
+        temp[i] = name[i];
+    }
+    fetch_current_dir_contents(current_directory_lba_address);
+    for(int i = 0; i < 127; ++i)
+    {
+        if(directory_content_buffer[i * 32 + 30] != type)
+        {
+            continue;
+        }
+        int same = 1;
+        for(int j = 0; j < 28; ++j)
+        {
+            if(directory_content_buffer[i * 32 + j] != name[j])
+            {
+                same = 0;
+                break;
+            }
+        }
+        if(same)
+        {
+            printf("can't create file/folder with same names/n");
+            return 0;
+        }
+    }
+    return 1;
+}
+
 void create_directory(char* name)
 {
+    int name_len = strlen(name);
+    char temp[28];
+    for(int i = 0; i < 28; ++i)
+    {
+        if(i >= name_len)
+        {
+            temp[i] = '\0';
+        }
+        else
+        {
+            temp[i] = name[i];
+        }
+    }
+    if(!check_repeat_file_or_directory_name(temp))
+    {
+        return;
+    }
     //TODO error handling
     //read an entire chunk
     for(int i = 0; i < 8; ++i)
@@ -405,10 +475,41 @@ void create_directory(char* name)
             }
         }
     }
+    printf("You will be able to create more things in a directory in the future!\n");
 }
 
 void create_file(char* name, char* file_extension)
 {
+
+    int name_len = strlen(name);
+    int extension_len = strlen(file_extension);
+    char temp[28];
+    for(int i = 0; i < 24; ++i)
+    {
+        if(i >= name_len)
+        {
+            temp[i] = '\0';
+        }
+        else
+        {
+            temp[i] = name[i];
+        }
+    }
+    for(int i = 0; i < 4; ++i)
+    {
+        if(i >= extension_len)
+        {
+            temp[i] = '\0';
+        }
+        else
+        {
+            temp[i + 24] = extension[i];    
+        }
+    }
+    if(!check_repeat_file_or_directory_name(temp))
+    {
+        return;
+    }
     //TODO error handling
     //read an entire chunk
     for(int i = 0; i < 8; ++i)
@@ -468,7 +569,7 @@ void create_file(char* name, char* file_extension)
                     }
                 }
                 //write to the data_buffer and write to the sector
-                for(int n = 0; n < 24; ++n)
+                for(int n = 0; n < 24; ++n) 
                 {
                     data_buffer[j + n] = name_buffer[n];
                 }
@@ -485,19 +586,5 @@ void create_file(char* name, char* file_extension)
             }
         }
     }
-}
-
-char* fetch_current_dir_directories()
-{
-
-}
-
-char* fetch_current_dir_files()
-{
-
-}
-
-char* fetch_current_dir_contents()
-{
-    
-}
+    printf("You will be able to create more things in a directory in the future!\n");
+}   

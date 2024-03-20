@@ -14,5 +14,6 @@ int write_sector(int lba);
 uint32_t pointer_to_lba(uint32_t pointer);
 sbf_address_t atla_to_sbf(uint32_t atla_address);
 void set_allocation_table_flag(uint32_t atla_address);
+int check_repeat_file_or_directory_name(int type, char* name)
 
 #endif

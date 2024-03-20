@@ -73,8 +73,6 @@ call pic_init
 extern kernel_main
 call kernel_main
 
-mov eax, 'a'
-mov byte [0x80000000], al
 
 ; If the system has nothing more to do, put the computer into an
 ; infinite loop. To do that:
