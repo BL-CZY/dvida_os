@@ -16,13 +16,17 @@ void kernel_main(void)
     //enter the shell
 
     sleep(1);
-
-    *(char*)(0x80000000) = 'a';
     for(;;)
     {
         halt_cpu();
     }
+
+    *(char*)(0x80000000) = 'a';
     terminal_initialize();
     printf("root > ");
     current_io_state = stdin_command;
 }
+    for(;;)
+    {
+        halt_cpu();
+    }
