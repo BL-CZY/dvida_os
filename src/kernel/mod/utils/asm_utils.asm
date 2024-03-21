@@ -10,6 +10,20 @@ global disable_interrupts
 global enable_interrupts
 global halt_cpu
 
+global get_eax
+global get_ebx
+global get_ecx
+global get_edx
+global get_esp
+global get_ebp
+
+global set_eax
+global set_ebx
+global set_ecx
+global set_edx
+global set_esp
+global set_ebp
+
 global call_interrupt_0x80
 
 section .text
@@ -95,4 +109,52 @@ section .text
     ; function: system call 0x80
     call_interrupt_0x80:
         int 0x80
+        ret
+
+    get_eax:
+        mov eax, eax
+        ret
+
+    get_ebx:
+        mov eax, ebx
+        ret
+
+    get_ecx:
+        mov eax, ecx
+        ret
+
+    get_edx:
+        mov eax, edx
+        ret
+
+    get_esp:
+        mov eax, esp
+        ret
+
+    get_ebp:
+        mov eax, ebp
+        ret
+
+    set_eax:
+        mov eax, [esp + 4]
+        ret
+
+    set_ebx:
+        mov ebx, [esp + 4]
+        ret
+
+    set_ecx:
+        mov ecx, [esp + 4]
+        ret
+
+    set_edx:
+        mov edx, [esp + 4]
+        ret
+
+    set_esp:
+        mov esp, [esp + 4]
+        ret
+
+    set_ebp:
+        mov ebp, [esp + 4]
         ret

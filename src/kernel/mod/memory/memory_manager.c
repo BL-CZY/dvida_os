@@ -1,5 +1,6 @@
 #include "../../lib/utils/mem_utils.h"
 #include "../../lib/std/stdio.h"
+#include "mem_map.h"
 
 #include <stdint.h>
 

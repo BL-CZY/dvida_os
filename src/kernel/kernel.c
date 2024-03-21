@@ -12,6 +12,9 @@ void kernel_main(void)
     current_io_state = stdin_data;
     terminal_initialize();
     printf("Hello World!\n");
+    *(char*)(0x40000000) = 'a';
+    *(char*)(0x80000000) = 'b';
+    *(char*)(0xBFFFFFFF) = 'c';
 
     get_root();
     //enter the shell

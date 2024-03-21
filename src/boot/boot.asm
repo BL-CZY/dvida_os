@@ -47,6 +47,9 @@ _start:
 ; The bootloader has loaded us into 32-bit protected mode on a x86
 ; machine.
 
+; .loop: hlt
+;        jmp .loop
+
 mov esp, stack_top
 
 ; This is a good place to initialize crucial processor state before the
